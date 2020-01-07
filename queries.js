@@ -43,3 +43,25 @@ FROM film
 ORDER BY film_id ASC
 LIMIT 5;
 
+// practice
+SELECT inventory_id, film_id
+FROM inventory
+WHERE inventory_id
+BETWEEN 3 AND 9;
+
+// challenge 8
+SELECT COUNT(*)
+FROM payment
+WHERE amount > 5.00;
+
+// challenge 9
+SELECT COUNT(*)
+FROM actor
+WHERE first_name LIKE 'P%';
+             
+// challenge 10
+SELECT COUNT(DISTINCT(district))
+FROM address;
+
+
+
