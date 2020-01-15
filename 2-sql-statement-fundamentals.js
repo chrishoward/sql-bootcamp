@@ -63,5 +63,6 @@ WHERE first_name LIKE 'P%';
 SELECT COUNT(DISTINCT(district))
 FROM address;
 
+// challenge 11
 
 
