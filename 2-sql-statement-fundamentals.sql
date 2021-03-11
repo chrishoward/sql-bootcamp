@@ -173,4 +173,124 @@ AND address_id < 500
 ORDER BY customer_id DESC
 LIMIT 1;
 
+-- practice
+SELECT title AS film_name
+FROM film;
 
+SELECT SUM(amount) AS revenue
+FROM payment;
+
+SELECT *
+FROM payment
+INNER JOIN customer
+ON payment.customer_id = customer.customer_id;
+
+SELECT *
+FROM customer
+FULL OUTER JOIN payment
+ON customer.customer_id = payment.customer_id
+WHERE payment.customer_id IS null
+OR customer.customer_id IS null;
+
+-- return matching rows only
+SELECT *
+FROM film
+INNER JOIN inventory
+ON film.film_id = inventory.film_id;
+
+-- return all rows, matching and non-matching
+SELECT *
+FROM film
+FULL OUTER JOIN inventory
+ON film.film_id = inventory.film_id;
+
+-- return non-matching rows only
+SELECT *
+FROM film
+FULL OUTER JOIN inventory
+ON film.film_id = inventory.film_id
+WHERE film.film_id IS null
+OR inventory.inventory_id IS null;
+
+-- return matching rows and film rows that don't have a matching inventory
+SELECT *
+FROM film
+LEFT OUTER JOIN inventory
+ON film.film_id = inventory.film_id;
+
+-- return film rows that don't have a matching inventory only
+SELECT *
+FROM film
+LEFT OUTER JOIN inventory
+ON film.film_id = inventory.film_id
+WHERE inventory.inventory_id IS null;
+
+-- challenge 19
+SELECT customer.email, address.district
+FROM customer
+INNER JOIN address
+ON customer.address_id = address.address_id
+WHERE address.district = 'California';
+
+-- challenge 20
+SELECT title
+FROM film
+INNER JOIN film_actor
+ON film.film_id = film_actor.film_id
+INNER JOIN actor
+ON film_actor.actor_id = actor.actor_id
+WHERE actor.first_name = 'Nick'
+AND actor.last_name = 'Wahlberg';
+
+-- challenge 21
+SELECT DISTINCT(TO_CHAR(payment_date, 'MONTH'))
+FROM payment;
+
+-- challenge 22
+SELECT COUNT(TO_CHAR(payment_date, 'DAY'))
+FROM payment
+WHERE TO_CHAR(payment_date, 'DAY') LIKE 'MONDAY%';
+
+SELECT COUNT(*)
+FROM payment
+WHERE EXTRACT(DOW FROM payment_date) = 1;
+
+-- challenge 23
+SELECT *
+FROM cd.facilities;
+
+-- challenge 24
+SELECT name, membercost
+FROM cd.facilities;
+
+-- challenge 25
+SELECT *
+FROM cd.facilities
+WHERE membercost > 0;
+
+-- challenge 26
+SELECT facid, name, membercost, monthlymaintenance
+FROM cd.facilities
+WHERE membercost > 0
+AND membercost < monthlymaintenance / 50;
+
+-- challenge 27
+SELECT *
+FROM cd.facilities
+WHERE name LIKE '%Tennis%';
+
+-- challenge 28
+SELECT *
+FROM cd.facilities
+WHERE facid IN (1,5);
+
+-- challenge 29
+SELECT memid, surname, firstname, joindate
+FROM cd.members
+WHERE joindate > '2012-09-01';
+
+-- challenge 30
+SELECT surname
+FROM cd.members
+WHERE memid < 10
+ORDER BY surname ASC;
