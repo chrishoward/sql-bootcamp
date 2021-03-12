@@ -272,7 +272,7 @@ WHERE membercost > 0;
 SELECT facid, name, membercost, monthlymaintenance
 FROM cd.facilities
 WHERE membercost > 0
-AND membercost < monthlymaintenance / 50;
+AND (membercost < monthlymaintenance / 50);
 
 -- challenge 27
 SELECT *
@@ -287,10 +287,51 @@ WHERE facid IN (1,5);
 -- challenge 29
 SELECT memid, surname, firstname, joindate
 FROM cd.members
-WHERE joindate > '2012-09-01';
+WHERE joindate >= '2012-09-01';
 
 -- challenge 30
-SELECT surname
+SELECT DISTINCT(surname)
 FROM cd.members
-WHERE memid < 10
-ORDER BY surname ASC;
+ORDER BY surname ASC
+LIMIT 10;
+
+-- challenge 31
+SELECT MAX(joindate)
+FROM cd.members;
+
+-- challenge 32
+SELECT COUNT(*)
+FROM cd.facilities
+WHERE guestcost >= 10;
+
+-- challenge 33
+SELECT facid, SUM(slots) AS total_slots
+FROM cd.bookings
+WHERE EXTRACT(MONTH FROM starttime) = 9
+AND EXTRACT(YEAR FROM starttime) = 2012
+GROUP BY facid
+ORDER BY SUM(slots) ASC;
+
+-- challenge 34
+SELECT facid, SUM(slots) AS total_slots
+FROM cd.bookings
+GROUP BY facid
+HAVING SUM(slots) > 1000
+ORDER BY facid ASC;
+
+-- challenge 35
+SELECT starttime, name
+FROM cd.bookings AS b
+INNER JOIN cd.facilities AS f
+ON b.facid = f.facid
+WHERE name LIKE '%Tennis Court%'
+AND TO_CHAR(starttime, 'YYYY-MM-DD') = '2012-09-21'
+ORDER BY starttime ASC;
+
+-- challenge 36
+SELECT starttime
+FROM cd.bookings AS b
+INNER JOIN cd.members AS m
+ON b.memid = m.memid
+WHERE m.firstname = 'David'
+AND m.surname = 'Farrell';
