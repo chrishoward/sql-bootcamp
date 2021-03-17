@@ -155,7 +155,7 @@ WHERE staff_id = 2
 GROUP BY customer_id
 HAVING SUM(amount) > 100;
 
--- assessment 1
+-- assessment
 SELECT customer_id, SUM(amount)
 FROM payment
 WHERE staff_id = 2
@@ -392,4 +392,212 @@ VALUES
 DELETE FROM job
 WHERE job_name = 'Cowboy'
 RETURNING job_id, job_name;
+
+CREATE TABLE information(
+	info_id SERIAL PRIMARY KEY,
+	title VARCHAR(500) NOT NULL,
+	person VARCHAR(50) NOT NULL UNIQUE
+);
+
+ALTER TABLE information
+RENAME TO new_info;
+
+ALTER TABLE new_info
+RENAME COLUMN person TO people;
+
+ALTER TABLE new_info
+ALTER COLUMN people
+DROP NOT NULL;
+
+INSERT INTO new_info(title)
+VALUES
+	('some new title');
+
+ALTER TABLE new_info
+DROP COLUMN people;
+
+ALTER TABLE new_info
+DROP COLUMN IF EXISTS people;
+
+CREATE TABLE employee(
+	emp_id SERIAL PRIMARY KEY,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	birthdate DATE CHECK(birthdate > '1990-01-01'),
+	hire_date DATE CHECK(hire_date > birthdate),
+	salary INTEGER CHECK(salary > 0)
+);
+
+INSERT INTO employee(
+	first_name,
+	last_name,
+	birthdate,
+	hire_date,
+	salary
+)
+VALUES
+	('Jose', 'Portilla', '1990-11-03', '2010-01-01', 100),
+	('Sammy', 'Smith', '1990-01-02', '2010-01-01', 100)
+
+-- assessment
+
+CREATE TABLE students(
+	student_id SERIAL PRIMARY KEY,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	homeroom_number SMALLINT NOT NULL,
+	phone VARCHAR(50) NOT NULL UNIQUE,
+	email VARCHAR(200) NOT NULL UNIQUE,
+	graduation_year SMALLINT
+)
+
+CREATE TABLE teachers(
+	teacher_id SERIAL PRIMARY KEY,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	homeroom_number SMALLINT NOT NULL,
+	department VARCHAR(100) NOT NULL,
+	email VARCHAR(200) NOT NULL UNIQUE,
+	phone VARCHAR(50) NOT NULL UNIQUE
+);
+
+ALTER TABLE students
+ALTER COLUMN email DROP NOT NULL,
+ALTER COLUMN graduation_year SET NOT NULL;
+
+INSERT INTO students(
+	first_name,
+	last_name,
+	homeroom_number,
+	phone,
+	graduation_year
+)
+VALUES
+	('Mark', 'Watney', 5, '777-555-1234', 2035);
+
+ALTER TABLE teachers
+ALTER COLUMN email DROP NOT NULL;
+
+INSERT INTO teachers(
+	first_name,
+	last_name,
+	homeroom_number,
+	department,
+	email,
+	phone
+)
+VALUES
+	('Jonas', 'Salk', 5, 'Biology', 'jsalk@school.org', '777-555-4321');
+
+SELECT
+	customer_id,
+	CASE 
+		WHEN (customer_id <= 100) THEN 'Platinum'
+		WHEN (customer_id BETWEEN 100 AND 200) THEN 'Plus'
+		ELSE 'Normal'
+	END AS membership_status
+FROM customer;
+
+SELECT
+	customer_id,
+	CASE customer_id
+		WHEN 2 THEN 'Winner'
+		WHEN 5 THEN 'Second Place'
+		ELSE 'No Prize'
+	END as raffle_status
+FROM customer;
+
+-- challenge
+SELECT
+	SUM(
+		CASE rating
+			WHEN 'R' THEN 1
+			ELSE 0
+		END
+	) AS r,
+	SUM(
+		CASE rating
+			WHEN 'PG' THEN 1
+			ELSE 0
+		END
+	) AS pg,
+	SUM(
+		CASE rating
+			WHEN 'PG-13' THEN 1
+			ELSE 0
+		END
+	) AS pg13
+FROM film;
+
+-- practice
+SELECT CAST('5' AS INTEGER);
+
+SELECT '5'::INTEGER;
+
+SELECT CHAR_LENGTH(CAST(inventory_id AS VARCHAR))
+FROM rental;
+
+CREATE TABLE depts(
+	first_name VARCHAR(50),
+	department VARCHAR(50)
+);
+
+INSERT INTO depts(
+	first_name,
+	department
+)
+VALUES
+	('Vinton', 'A'),
+	('Lauren', 'A'),
+	('Claire', 'B');
+	
+SELECT (
+	SUM(
+		CASE department
+			WHEN 'A' THEN 1
+			ELSE 0
+		END
+	)
+	/
+	SUM(
+		CASE department
+			WHEN 'B' THEN 1
+			ELSE 0
+		END
+	)
+) * 100
+FROM depts;
+
+DELETE FROM depts
+WHERE department = 'B';
+
+SELECT (
+	SUM(CASE department WHEN 'A' THEN 1	ELSE 0 END)/
+	NULLIF(SUM(CASE department	WHEN 'B' THEN 1	ELSE 0 END), 0)
+) * 100
+FROM depts;
+
+CREATE VIEW customer_info AS
+SELECT first_name, last_name, address
+FROM customer AS c
+INNER JOIN address AS a
+ON c.address_id = a.address_id;
+
+SELECT * FROM customer_info;
+
+CREATE OR REPLACE VIEW customer_info AS
+SELECT first_name, last_name, address, district
+FROM customer AS c
+INNER JOIN address AS a
+ON c.address_id = a.address_id;
+
+DROP VIEW IF EXISTS customer_info;
+
+ALTER VIEW customer_info RENAME TO c_info;
+
+CREATE TABLE simple(
+	a INTEGER,
+	b INTEGER,
+	c INTEGER
+)
 
